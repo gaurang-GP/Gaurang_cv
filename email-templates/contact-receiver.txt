@@ -1,0 +1,11 @@
+[Portfolio] New message for {{to_name}}
+────────────────────────────────────
+
+From: {{from_name}}
+Email: {{from_email}}
+
+Message:
+{{message}}
+
+Reply: {{reply_to}}
+Form: {{site_url}}

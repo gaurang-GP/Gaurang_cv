@@ -1,0 +1,13 @@
+Hi {{from_name}},
+
+Thank you for contacting {{owner_name}} through the portfolio site. Your message was received successfully.
+
+Your message:
+{{message}}
+
+I usually reply within 1–2 business days. For anything urgent, email me at {{owner_email}} or call {{owner_phone}}.
+
+— {{owner_name}}
+Full Stack Developer
+
+Portfolio: {{site_url}}
