@@ -3,8 +3,7 @@ import { ClientOnly } from "@tanstack/react-router";
 import { lazy, Suspense, useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { z } from "zod";
 import { Github, Linkedin, Mail, Phone, MapPin, Download, ExternalLink, Send, FileText, Briefcase, GraduationCap, Sun, Moon } from "lucide-react";
-import cv from "@/assets/cv.pdf.asset.json";
-import { profile, stats, skills, projects, timeline } from "@/components/portfolio/data";
+import { profile, resume, stats, skills, projects, timeline } from "@/components/portfolio/data";
 import { isEmailJsConfigured, sendContactEmail } from "@/lib/send-contact-email";
 
 const HeroScene = lazy(() => import("@/components/portfolio/HeroScene"));
@@ -124,7 +123,10 @@ function Loader({ show }: { show: boolean }) {
     <div aria-hidden className={`fixed inset-0 z-[100] grid place-items-center bg-background transition-opacity duration-500 ${show ? "opacity-100" : "pointer-events-none opacity-0"}`}>
       <div className="flex flex-col items-center gap-4">
         <div className="h-12 w-12 animate-spin rounded-full border-4 border-accent border-t-primary" />
-        <span className="font-display text-lg font-semibold text-gradient">GP</span>
+        <p className="font-display text-2xl font-bold tracking-tight">
+          G<span className="text-primary">P</span>.
+        </p>
+        <p className="text-sm font-medium text-muted-foreground">{profile.name}</p>
       </div>
     </div>
   );
@@ -220,7 +222,7 @@ function Typing() {
   return <span className="text-gradient">{text}<span className="animate-blink text-primary">|</span></span>;
 }
 
-function Button({ href, children, variant = "primary", download }: { href: string; children: ReactNode; variant?: "primary" | "ghost"; download?: boolean }) {
+function Button({ href, children, variant = "primary", download }: { href: string; children: ReactNode; variant?: "primary" | "ghost"; download?: boolean | string }) {
   const cls = variant === "primary"
     ? "bg-gradient-primary text-primary-foreground shadow-glow"
     : "glass text-foreground";
@@ -236,7 +238,7 @@ function Button({ href, children, variant = "primary", download }: { href: strin
     gsap.to(ref.current, { x: 0, y: 0, duration: 0.6, ease: "elastic.out(1, 0.4)" });
   };
   return (
-    <a ref={ref} onMouseMove={onMove} onMouseLeave={onLeave} href={href} download={download} target={download ? "_blank" : undefined} rel="noreferrer" className={`inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-transform hover:-translate-y-0.5 ${cls}`}>
+    <a ref={ref} onMouseMove={onMove} onMouseLeave={onLeave} href={href} download={download || undefined} target={download && href.startsWith("http") ? "_blank" : undefined} rel="noreferrer" className={`inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-transform hover:-translate-y-0.5 ${cls}`}>
       {children}
     </a>
   );
@@ -256,7 +258,7 @@ function Hero() {
           <p data-hero-item className="mt-4 h-9 text-2xl font-semibold md:text-3xl"><Typing /></p>
           <p data-hero-item className="mt-5 max-w-lg text-lg text-muted-foreground">I craft scalable SaaS platforms, CRMs and APIs with Laravel, React and Next.js.</p>
           <div data-hero-item className="mt-8 flex flex-wrap gap-3">
-            <Button href={cv.url} download><Download className="h-4 w-4" /> Download Resume</Button>
+            <Button href={resume.url} download={resume.filename}><Download className="h-4 w-4" /> Download Resume</Button>
             <Button href="#contact" variant="ghost"><Mail className="h-4 w-4" /> Contact Me</Button>
           </div>
         </div>
@@ -408,7 +410,7 @@ function Resume() {
             <div><p className="font-semibold">Languages</p><p className="text-muted-foreground">English, Hindi, Gujarati</p></div>
           </div>
         </div>
-        <Button href={cv.url} download><Download className="h-4 w-4" /> Download PDF</Button>
+        <Button href={resume.url} download={resume.filename}><Download className="h-4 w-4" /> Download PDF</Button>
       </div>
     </section>
   );

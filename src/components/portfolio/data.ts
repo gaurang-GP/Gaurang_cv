@@ -1,4 +1,9 @@
 // Edit your portfolio content here.
+export const resume = {
+  url: "/GaurangParmar_CV.pdf",
+  filename: "GaurangParmar_CV.pdf",
+};
+
 export const profile = {
   name: "Gaurang Parmar",
   roles: ["Full Stack Developer", "Laravel Specialist", "PHP Developer", "React / Next.js Developer"],
