@@ -2,7 +2,25 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ClientOnly } from "@tanstack/react-router";
 import { lazy, Suspense, useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { z } from "zod";
-import { Github, Linkedin, Mail, Phone, MapPin, Download, ExternalLink, Send, FileText, Briefcase, GraduationCap, Sun, Moon } from "lucide-react";
+import {
+  Github,
+  Linkedin,
+  Mail,
+  Phone,
+  MapPin,
+  Download,
+  ExternalLink,
+  Send,
+  FileText,
+  Briefcase,
+  GraduationCap,
+  Sun,
+  Moon,
+  Menu,
+  X,
+  ArrowUp,
+  Sparkles,
+} from "lucide-react";
 import { profile, resume, stats, skills, projects, timeline } from "@/components/portfolio/data";
 import { isEmailJsConfigured, sendContactEmail } from "@/lib/send-contact-email";
 
@@ -99,12 +117,13 @@ function Index() {
   }, []);
 
   return (
-    <div className="relative overflow-x-hidden">
+    <div className="relative min-h-screen overflow-x-hidden bg-page-mesh">
+      <div aria-hidden className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(ellipse_60%_40%_at_100%_0%,color-mix(in_oklab,var(--primary)_18%,transparent),transparent_55%),radial-gradient(ellipse_50%_35%_at_0%_100%,color-mix(in_oklab,var(--primary-glow)_14%,transparent),transparent_50%)]" />
       <Loader show={loading} />
       <div data-progress aria-hidden className="bg-gradient-primary fixed inset-x-0 top-0 z-[60] h-1 origin-left scale-x-0" />
       <Cursor />
       <Navbar />
-      <main>
+      <main className="relative z-10">
         <Hero />
         <About />
         <Skills />
@@ -169,6 +188,7 @@ function ThemeToggle() {
 function Navbar() {
   const [active, setActive] = useState("home");
   const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -183,22 +203,69 @@ function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
   return (
-    <header className={`fixed inset-x-0 top-0 z-50 transition-all ${scrolled ? "py-2" : "py-4"}`}>
-      <nav className={`mx-auto flex max-w-6xl items-center justify-between rounded-2xl px-5 py-3 ${scrolled ? "glass" : ""}`} aria-label="Main">
-        <a href="#home" className="font-display text-xl font-bold">G<span className="text-primary">P</span>.</a>
-        <ul className="hidden gap-1 md:flex">
+    <header className={`fixed inset-x-0 top-0 z-50 px-4 transition-all ${scrolled ? "py-2" : "py-4"}`}>
+      <nav
+        className={`glass mx-auto flex max-w-6xl items-center justify-between rounded-2xl border border-border/60 px-4 py-2.5 shadow-soft transition-shadow ${scrolled ? "shadow-glow" : ""}`}
+        aria-label="Main"
+      >
+        <a href="#home" className="font-display inline-flex items-center text-xl font-bold leading-none tracking-tight">
+          G<span className="text-primary">P</span>.
+        </a>
+        <ul className="hidden gap-0.5 lg:flex">
           {NAV.map((id) => (
             <li key={id}>
-              <a href={`#${id}`} className={`rounded-full px-3 py-1.5 text-sm font-medium capitalize transition-colors ${active === id ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>{id}</a>
+              <a
+                href={`#${id}`}
+                className={`rounded-full px-3.5 py-2 text-sm font-medium capitalize transition-all ${active === id ? "bg-primary text-primary-foreground shadow-glow" : "text-muted-foreground hover:bg-accent/80 hover:text-foreground"}`}
+              >
+                {id}
+              </a>
             </li>
           ))}
         </ul>
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <a href="#contact" className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-glow md:hidden">Contact</a>
+          <a
+            href="#contact"
+            className="bg-gradient-primary hidden rounded-full px-4 py-2 text-sm font-semibold text-primary-foreground shadow-glow transition-transform hover:-translate-y-0.5 md:inline-flex"
+          >
+            Hire me
+          </a>
+          <button
+            type="button"
+            className="glass grid h-10 w-10 place-items-center rounded-full text-foreground lg:hidden"
+            aria-expanded={open}
+            aria-label={open ? "Close menu" : "Open menu"}
+            onClick={() => setOpen((v) => !v)}
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
         </div>
       </nav>
+      {open && (
+        <div className="glass fixed inset-x-4 top-[4.5rem] z-40 rounded-2xl border border-border/60 p-4 shadow-soft lg:hidden">
+          <ul className="flex flex-col gap-1">
+            {NAV.map((id) => (
+              <li key={id}>
+                <a
+                  href={`#${id}`}
+                  onClick={() => setOpen(false)}
+                  className={`block rounded-xl px-4 py-3 text-sm font-semibold capitalize ${active === id ? "bg-primary text-primary-foreground" : "text-foreground hover:bg-accent"}`}
+                >
+                  {id}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </header>
   );
 }
@@ -245,26 +312,57 @@ function Button({ href, children, variant = "primary", download }: { href: strin
 }
 
 function Hero() {
+  const [first, ...rest] = profile.name.split(" ");
   return (
-    <section id="home" className="relative flex min-h-screen items-center pt-24">
-      <div aria-hidden className="absolute -left-40 top-20 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
-      <div aria-hidden className="absolute -right-20 bottom-10 h-96 w-96 rounded-full bg-primary-glow/15 blur-3xl" />
-      <div className="relative mx-auto grid w-full max-w-6xl items-center gap-10 px-5 lg:grid-cols-2">
+    <section id="home" className="relative flex min-h-screen items-center pt-28 pb-16">
+      <div aria-hidden className="absolute -left-32 top-24 h-[28rem] w-[28rem] rounded-full bg-primary/12 blur-[100px]" />
+      <div aria-hidden className="absolute -right-16 bottom-0 h-80 w-80 rounded-full bg-primary-glow/20 blur-[90px]" />
+      <div className="relative mx-auto grid w-full max-w-6xl items-center gap-12 px-5 lg:grid-cols-[1.05fr_0.95fr]">
         <div>
-          <p data-hero-item className="mb-4 inline-flex items-center gap-2 rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-accent-foreground">
-            <span className="h-2 w-2 rounded-full bg-primary" /> Available for new opportunities
+          <p
+            data-hero-item
+            className="glass-card mb-6 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-foreground"
+          >
+            <Sparkles className="h-4 w-4 text-primary" aria-hidden />
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+            Available for new opportunities
           </p>
-          <h1 data-hero-item className="text-5xl font-bold leading-tight md:text-6xl">Hi, I'm {profile.name.split(" ")[0]}<br /><span className="text-foreground">{profile.name.split(" ")[1]}.</span></h1>
-          <p data-hero-item className="mt-4 h-9 text-2xl font-semibold md:text-3xl"><Typing /></p>
-          <p data-hero-item className="mt-5 max-w-lg text-lg text-muted-foreground">I craft scalable SaaS platforms, CRMs and APIs with Laravel, React and Next.js.</p>
-          <div data-hero-item className="mt-8 flex flex-wrap gap-3">
-            <Button href={resume.url} download={resume.filename}><Download className="h-4 w-4" /> Download Resume</Button>
-            <Button href="#contact" variant="ghost"><Mail className="h-4 w-4" /> Contact Me</Button>
+          <h1 data-hero-item className="text-[clamp(2.5rem,6vw,3.75rem)] font-extrabold leading-[1.08] tracking-tight">
+            Hi, I&apos;m {first}
+            <br />
+            <span className="text-gradient">{rest.join(" ")}.</span>
+          </h1>
+          <p data-hero-item className="mt-5 h-10 text-2xl font-semibold md:h-11 md:text-3xl">
+            <Typing />
+          </p>
+          <p data-hero-item className="mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground">
+            I craft scalable SaaS platforms, CRMs and APIs with Laravel, React and Next.js — focused on clean architecture,
+            security, and shipping products that scale.
+          </p>
+          <div data-hero-item className="mt-10 flex flex-wrap gap-3">
+            <Button href={resume.url} download={resume.filename}>
+              <Download className="h-4 w-4" /> Download Resume
+            </Button>
+            <Button href="#contact" variant="ghost">
+              <Mail className="h-4 w-4" /> Contact Me
+            </Button>
+          </div>
+          <div data-hero-item className="mt-10 flex flex-wrap gap-6 border-t border-border/60 pt-8">
+            {stats.slice(0, 3).map((s) => (
+              <div key={s.label}>
+                <p className="font-display text-2xl font-bold text-gradient">{s.value}</p>
+                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{s.label}</p>
+              </div>
+            ))}
           </div>
         </div>
-        <div className="h-[380px] md:h-[500px]" data-scene>
+        <div className="h-[360px] md:h-[480px]" data-scene>
           <ClientOnly fallback={null}>
-            <div data-scene-inner className="h-full w-full"><Suspense fallback={null}><HeroScene /></Suspense></div>
+            <div data-scene-inner className="h-full w-full">
+              <Suspense fallback={null}>
+                <HeroScene />
+              </Suspense>
+            </div>
           </ClientOnly>
         </div>
       </div>
@@ -272,11 +370,16 @@ function Hero() {
   );
 }
 
-function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
+function SectionTitle({ eyebrow, title, desc }: { eyebrow: string; title: string; desc?: string }) {
   return (
-    <div data-reveal className="mb-12 text-center">
-      <p className="text-sm font-semibold uppercase tracking-widest text-primary">{eyebrow}</p>
-      <h2 className="mt-2 text-4xl font-bold">{title}</h2>
+    <div data-reveal className="mb-14 text-center">
+      <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-primary">
+        <span className="h-px w-8 bg-gradient-primary" aria-hidden />
+        {eyebrow}
+        <span className="h-px w-8 bg-gradient-primary" aria-hidden />
+      </p>
+      <h2 className="mt-4 text-3xl font-bold md:text-4xl">{title}</h2>
+      {desc && <p className="mx-auto mt-3 max-w-xl text-muted-foreground">{desc}</p>}
     </div>
   );
 }
@@ -287,9 +390,16 @@ function About() {
       <SectionTitle eyebrow="About me" title="Engineer with a product mindset" />
       <div className="grid items-center gap-12 md:grid-cols-[320px_1fr]">
         <div data-reveal className="animate-float mx-auto">
-          {/* Replace with your photo */}
-          <div className="bg-gradient-primary grid h-72 w-72 place-items-center rounded-3xl p-1 shadow-glow">
-            <div className="grid h-full w-full place-items-center rounded-[1.3rem] bg-card font-display text-7xl font-bold text-gradient" role="img" aria-label="Photo placeholder for Gaurang Parmar">GP</div>
+          {/* Replace with your photo: drop image in /public and use <img src="..." /> */}
+          <div className="relative grid h-72 w-72 place-items-center rounded-[2rem] p-[2px] shadow-glow" style={{ background: "var(--gradient-primary)" }}>
+            <div className="glass-card grid h-full w-full place-items-center overflow-hidden rounded-[calc(2rem-2px)] bg-card">
+              <span className="font-display text-7xl font-bold text-gradient" role="img" aria-label="Photo placeholder for Gaurang Parmar">
+                GP
+              </span>
+            </div>
+            <div className="glass absolute -bottom-3 left-1/2 -translate-x-1/2 rounded-full px-4 py-1.5 text-xs font-semibold text-foreground">
+              4+ yrs · Full Stack
+            </div>
           </div>
         </div>
         <div data-reveal>
@@ -311,13 +421,17 @@ function About() {
 
 function Skills() {
   return (
-    <section id="skills" className="bg-muted/50 py-24">
+    <section id="skills" className="border-y border-border/50 bg-muted/40 py-24">
       <div className="mx-auto max-w-6xl px-5">
-        <SectionTitle eyebrow="Skills" title="My toolkit" />
-        <div data-stagger className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <SectionTitle eyebrow="Skills" title="My toolkit" desc="Backend depth, modern frontends, and the integrations that connect them." />
+        <div data-stagger className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {skills.map((g) => (
-            <div key={g.group} className="glass rounded-2xl p-6 transition-transform hover:-translate-y-1">
-              <h3 className="mb-4 text-lg font-semibold">{g.group}</h3>
+            <div
+              key={g.group}
+              className="glass-card group rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-glow"
+            >
+              <div className="mb-4 h-1 w-10 rounded-full bg-gradient-primary transition-all group-hover:w-14" />
+              <h3 className="text-lg font-semibold">{g.group}</h3>
               <div className="flex flex-wrap gap-2">
                 {g.items.map((i) => <span key={i} className="rounded-full bg-accent px-3 py-1 text-sm text-accent-foreground">{i}</span>)}
               </div>
@@ -338,20 +452,36 @@ function TiltCard({ children }: { children: ReactNode }) {
     el.style.transform = `perspective(900px) rotateY(${x * 10}deg) rotateX(${-y * 10}deg) translateY(-4px)`;
   };
   const reset = () => { if (ref.current) ref.current.style.transform = ""; };
-  return <div ref={ref} onMouseMove={onMove} onMouseLeave={reset} className="glass h-full overflow-hidden rounded-2xl transition-transform duration-200 ease-out">{children}</div>;
+  return (
+    <div
+      ref={ref}
+      onMouseMove={onMove}
+      onMouseLeave={reset}
+      className="glass-card h-full overflow-hidden rounded-2xl transition-transform duration-200 ease-out"
+    >
+      {children}
+    </div>
+  );
 }
 
 function Projects() {
   return (
     <section id="projects" className="mx-auto max-w-6xl px-5 py-24">
-      <SectionTitle eyebrow="Projects" title="Selected work" />
-      <div data-stagger className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <SectionTitle eyebrow="Projects" title="Selected work" desc="SaaS, CRM, and API platforms built for real users and production load." />
+      <div data-stagger className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {projects.map((p, idx) => (
-          <div key={p.title}>
+          <div key={p.title} className={idx === 0 ? "sm:col-span-2 lg:col-span-2" : ""}>
             <TiltCard>
               {/* Replace with a project screenshot */}
-              <div className="relative grid h-40 place-items-center bg-gradient-primary" role="img" aria-label={`${p.title} preview`}>
-                <span className="font-display text-5xl font-bold text-primary-foreground/80">0{idx + 1}</span>
+              <div
+                className={`relative grid place-items-center overflow-hidden bg-gradient-primary ${idx === 0 ? "h-52" : "h-40"}`}
+                role="img"
+                aria-label={`${p.title} preview`}
+              >
+                <div aria-hidden className="absolute inset-0 bg-[linear-gradient(135deg,transparent_40%,oklch(1_0_0/0.12)_50%,transparent_60%)]" />
+                <span className="font-display text-5xl font-bold text-primary-foreground/85 drop-shadow-sm">
+                  {String(idx + 1).padStart(2, "0")}
+                </span>
               </div>
               <div className="flex flex-col p-6">
                 <h3 className="text-lg font-semibold">{p.title}</h3>
@@ -529,10 +659,26 @@ function Socials() {
 
 function Footer() {
   return (
-    <footer className="border-t py-8">
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 md:flex-row">
-        <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} {profile.name}. All rights reserved.</p>
-        <Socials />
+    <footer className="relative z-10 border-t border-border/60 bg-muted/30 py-10">
+      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-5 md:flex-row">
+        <div className="text-center md:text-left">
+          <p className="font-display text-lg font-bold">
+            G<span className="text-gradient">P</span>.
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            © {new Date().getFullYear()} {profile.name}. Crafted with Laravel, React & care.
+          </p>
+        </div>
+        <div className="flex items-center gap-4">
+          <Socials />
+          <a
+            href="#home"
+            className="glass grid h-11 w-11 place-items-center rounded-full text-foreground transition hover:-translate-y-0.5 hover:text-primary"
+            aria-label="Back to top"
+          >
+            <ArrowUp className="h-5 w-5" />
+          </a>
+        </div>
       </div>
     </footer>
   );

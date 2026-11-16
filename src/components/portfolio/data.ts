@@ -18,7 +18,7 @@ export const profile = {
 
 export const stats = [
   { value: "4+", label: "Years experience" },
-  { value: "7+", label: "Projects shipped" },
+  { value: "15+", label: "Projects shipped" },
   { value: "20+", label: "Technologies" },
 ];
 
@@ -36,7 +36,13 @@ export const projects = [
   { title: "Align Pro – CRM", desc: "Lead management and CRM with pipeline workflows, lead-to-project conversion, JWT auth and role-specific dashboards.", tags: ["Next.js", "React", "Laravel"], github: "#", live: "#" },
   { title: "Driveo – Taxi Booking", desc: "REST APIs for ride requests, driver assignment, live location tracking and payment gateway integration.", tags: ["Laravel", "REST APIs", "MySQL"], github: "#", live: "#" },
   { title: "Hospital Management", desc: "Patient registration, doctor scheduling, appointments and billing, with RBAC for admins, doctors, nurses and staff.", tags: ["React", "Laravel", "MySQL"], github: "#", live: "#" },
-  { title: "Blaxity – Lifestyle Platform", desc: "Backend for web and iOS: auth, membership verification, real-time chat, private photos and filtered discovery.", tags: ["Laravel", "Vue.js", "REST APIs"], github: "#", live: "#" },
+  {
+    title: "Blaxity – Dating & Lifestyle App",
+    desc: "Dating and lifestyle platform for web and iOS — auth, membership verification, real-time chat, private photos, and filtered discovery.",
+    tags: ["Laravel", "Vue.js", "REST APIs", "Real-time Chat"],
+    github: "#",
+    live: "#",
+  },
   { title: "Surya Namaskar – Gujarat Govt.", desc: "Backend APIs for a government application with secure data handling, validation and integrations.", tags: ["Laravel", "MySQL", "REST APIs"], github: "#", live: "#" },
 ];
 

@@ -13,7 +13,6 @@ function Shapes() {
     // Spin the whole scene as the page scrolls
     const scroll = typeof window === "undefined" ? 0 : window.scrollY / window.innerHeight;
     g.rotation.y += (state.pointer.x * 0.6 + Math.min(scroll, 1) * 0.8 - g.rotation.y) * dt * 3;
-    
     g.rotation.x += (-state.pointer.y * 0.4 - g.rotation.x) * dt * 3;
     if (core.current) {
       core.current.rotation.x += dt * 0.3;
@@ -29,7 +28,7 @@ function Shapes() {
     <group ref={group}>
       <mesh ref={core}>
         <icosahedronGeometry args={[1.35, 1]} />
-        <meshStandardMaterial color="#4f6bed" metalness={0.35} roughness={0.25} flatShading />
+        <meshStandardMaterial color="#5b52e8" metalness={0.4} roughness={0.22} flatShading />
       </mesh>
       <mesh position={[2.1, 1.1, -0.5]}>
         <torusGeometry args={[0.45, 0.16, 24, 64]} />
@@ -49,7 +48,7 @@ function Shapes() {
       </mesh>
       <mesh scale={1.75}>
         <icosahedronGeometry args={[1.35, 1]} />
-        <meshBasicMaterial color="#6366f1" wireframe transparent opacity={0.12} />
+        <meshBasicMaterial color="#7c7af5" wireframe transparent opacity={0.14} />
       </mesh>
     </group>
   );
@@ -57,7 +56,12 @@ function Shapes() {
 
 export default function HeroScene() {
   return (
-    <Canvas camera={{ position: [0, 0, 6.5], fov: 45 }} dpr={[1, 2]}>
+    <Canvas
+      camera={{ position: [0, 0, 6.5], fov: 45 }}
+      dpr={[1, 2]}
+      gl={{ alpha: true, antialias: true }}
+      style={{ background: "transparent" }}
+    >
       <ambientLight intensity={0.8} />
       <directionalLight position={[4, 5, 5]} intensity={1.6} />
       <pointLight position={[-4, -2, 3]} intensity={20} color="#7dd3fc" />
